@@ -1,3 +1,3 @@
 # Erudit
 
-A simple game what I want to do.
+A simple game which I want to do.
