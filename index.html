@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="js/jquery-ui-1.11.4.custom/jquery-ui.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<style>
+		.coin {display: inline-block; padding:5px 10px 5px 10px;}
+
+	</style>	
+
+
+  </head>
+  <body>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+
+	<script type="text/javascript">
+		$(function(){
+			$(".draggable").parent().draggable({
+				snap:".board td, .user-position td",
+				revert:"invalid"
+			});
+			$(".board td, .user-position td").droppable();
+		});
+	</script>
+	<script type="text/javascript">
+		$(function(){
+			coins = ["А:1","Б:3","В:2","Г:3","Д:2","Е:1","Ж:5"];
+			for(i in coins){
+				console.log(coins[i]);
+			}
+		});
+	</script>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-8 col-xs-offset-2">
+                        <div class="panel panel-default">
+				<div class="panel-body"></div>
+				<div class="panel-footer text-center">Top</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-2">
+			<div class="panel panel-default">
+				<div class="panel-heading text-center">Статистика</div>
+				<div class="panel-body"></div>
+			</div>
+		</div>
+		<div class="col-md-8">
+			<div class="jumbotron text-center bg-warning">
+				<table class="table table-bordered table-striped board">
+<!--Header -->
+					<tr>
+						<td></td>
+						<td><span class="badge">&nbsp;1</span></td>
+						<td><span class="badge">&nbsp;2</span></td>
+						<td><span class="badge">&nbsp;3</span></td>
+						<td><span class="badge">&nbsp;4</span></td>
+						<td><span class="badge">&nbsp;5</span></td>
+						<td><span class="badge">&nbsp;6</span></td>
+						<td><span class="badge">&nbsp;7</span></td>
+						<td><span class="badge">&nbsp;8</span></td>
+						<td><span class="badge">&nbsp;9</span></td>
+						<td><span class="badge">10</span></td>
+						<td><span class="badge">11</span></td>
+						<td><span class="badge">12</span></td>
+						<td><span class="badge">13</span></td>
+						<td><span class="badge">14</span></td>
+						<td><span class="badge">15</span></td>
+					</tr>
+<!--A: 1-15 -->
+					<tr>
+						<td><span class="badge">A</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--B: 1-15 -->
+					<tr>
+						<td><span class="badge">B</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--C: 1-15 -->
+					<tr>
+						<td><span class="badge">C</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--D: 1-15 -->
+					<tr>
+						<td><span class="badge">D</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--F: 1-15 -->
+					<tr>
+						<td><span class="badge">F</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--G: 1-15 -->
+					<tr>
+						<td><span class="badge">G</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--H: 1-15 -->
+					<tr>
+						<td><span class="badge">H</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--I: 1-15 -->
+					<tr>
+						<td><span class="badge">I</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--J: 1-15 -->
+					<tr>
+						<td><span class="badge">J</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+
+<!--K: 1-15 -->
+					<tr>
+						<td><span class="badge">K</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+
+<!--L: 1-15 -->
+					<tr>
+						<td><span class="badge">L</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+<!--M: 1-15 -->                                                           
+					<tr>
+						<td><span class="badge">M</span></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+
+
+				</table>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="panel panel-default">
+				<div class="panel-heading text-center">Чат</div>
+				<div class="panel-body"></div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-xs-8 col-xs-offset-2">
+                        <div class="panel panel-default">
+				<div class="panel-heading bg-warning" style="display:block-inline;">
+<!--coins-->
+				<table class="table table-bordered user-position">
+					<tr class="warning">
+						<td>
+						</td>
+						<td>
+						</td>
+						<td>
+						</td>
+						<td>
+						</td>
+						<td>
+						</td>
+						<td>
+						</td>
+						<td>
+						</td>
+						<td>
+						</td>
+					</tr>
+				</table>
+
+				</div>
+				<div class="panel-body" >
+					<div class="ui-widget ui-widget-content ui-corner-all coin">
+						<span class="draggable">A<sub>1</sub></span>
+					</div>
+
+				</div>             
+
+			</div>
+		</div>
+	</div>
+
+</div>
+
+  </body>
+</html>
