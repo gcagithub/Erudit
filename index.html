@@ -18,7 +18,7 @@
     <![endif]-->
 
 	<style>
-		.coin {display: inline-block; padding:5px 10px 5px 10px;}
+		.chip {display: inline-block; padding:5px 10px 5px 10px;}
 
 	</style>	
 
@@ -42,11 +42,13 @@
 	</script>
 	<script type="text/javascript">
 		$(function(){
-			coins = ["А:1","Б:3","В:2","Г:3","Д:2","Е:1","Ж:5"];
-			for(i in coins){
-				console.log(coins[i]);
+			chips = ["А:1","Б:3","В:2","Г:3","Д:2","Е:1","Ж:5"];
+			for(i in chips){
+				console.log(chips[i]);
 			}
 		});
+	</script>
+	<script id="chip-tmpl" type="text/x-jquery-tmpl">
 	</script>
 
 <div class="container-fluid">
@@ -338,7 +340,7 @@
 		<div class="col-xs-8 col-xs-offset-2">
                         <div class="panel panel-default">
 				<div class="panel-heading bg-warning" style="display:block-inline;">
-<!--coins-->
+<!--chips-->
 				<table class="table table-bordered user-position">
 					<tr class="warning">
 						<td>
@@ -361,8 +363,8 @@
 				</table>
 
 				</div>
-				<div class="panel-body" >
-					<div class="ui-widget ui-widget-content ui-corner-all coin">
+				<div id="bank" class="panel-body" >
+					<div class="ui-widget ui-widget-content ui-corner-all chip">
 						<span class="draggable">A<sub>1</sub></span>
 					</div>
 
