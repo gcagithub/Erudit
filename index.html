@@ -18,7 +18,7 @@
     <![endif]-->
 
 	<style>
-		.chip {display: inline-block; padding:5px 10px 5px 10px;}
+		.chip {display: inline-block; padding:5px 10px 5px 10px; cursor: pointer;}
 	</style>	
 
 
@@ -29,26 +29,95 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
 	<script src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+	<script src="js/jsrender.js"></script>
+
+	<script type="text/javascript">
+		$(function(){
+			var chips = [
+				{litera:"A", score:1, num:10},
+				{litera:"Б", score:3, num:3},
+				{litera:"В", score:2, num:5},
+				{litera:"Г", score:3, num:3},
+				{litera:"Д", score:2, num:5},
+				{litera:"Е", score:1, num:9},
+				{litera:"Ж", score:5, num:2},
+				{litera:"З", score:5, num:2},
+				{litera:"И", score:1, num:8},
+				{litera:"Й", score:3, num:4},
+				{litera:"К", score:2, num:6},
+				{litera:"Л", score:2, num:4},
+				{litera:"М", score:2, num:5},
+				{litera:"Н", score:1, num:8},
+				{litera:"О", score:1, num:10},
+				{litera:"П", score:2, num:6},
+				{litera:"Р", score:2, num:6},
+				{litera:"С", score:2, num:6},
+				{litera:"Т", score:2, num:5},
+				{litera:"У", score:3, num:3},
+				{litera:"Ф", score:10, num:1},
+				{litera:"Х", score:5, num:2},
+				{litera:"Ц", score:10, num:1},
+				{litera:"Ч", score:5, num:2},
+				{litera:"Ш", score:10, num:1},
+				{litera:"Щ", score:10, num:1},
+				{litera:"Ъ", score:10, num:1},
+				{litera:"Ы", score:5, num:2},
+				{litera:"Ь", score:5, num:2},
+				{litera:"Э", score:10, num:1},
+				{litera:"Ю", score:10, num:1},
+				{litera:"Я", score:3, num:3},
+				{litera:"*", score:0, num:3}
+
+			];
+			var randomChipsForBank = [];
+			for(var i in chips){
+				addToArrayByNum(randomChipsForBank, chips[i]);
+			}
+		
+			fillBank(randomChipsForBank);
+		});
+		function addToArrayByNum(array, chip){
+			for(var i = chip.num; i >0; i--){
+				array.push(chip);
+			}
+
+			array.sort(function(){
+				return Math.random() - 0.6;
+			});
+			
+			return array;
+		}
+		function fillBank(chips){
+			var tmpl = $.templates("#chip-tmpl").render(chips);
+			$("#bank").append(tmpl);
+		}
+	</script>
+
+	<script id="chip-tmpl" type="text/x-jsrender">
+		<div class="ui-widget ui-widget-content ui-corner-all chip">
+			<span class="draggable">{{:litera}}<sub>{{:score}}</sub></span>
+		</div>
+	</script>
 
 	<script type="text/javascript">
 		$(function(){
 			$(".draggable").parent().draggable({
+				cursor: "move",
 				snap:".board td, .user-position td",
 				revert:"invalid"
 			});
-			$(".board td, .user-position td").droppable();
+			$(".board td, .user-position td").droppable({
+				 drop: function( event, ui ) {
+					$( this )
+					.addClass( "ui-state-highlight" )
+					.find( "p" )
+					.html( "Dropped!" );
+				}
+
+			});
 		});
 	</script>
-	<script type="text/javascript">
-		$(function(){
-			chips = ["А:1","Б:3","В:2","Г:3","Д:2","Е:1","Ж:5"];
-			for(i in chips){
-				console.log(chips[i]);
-			}
-		});
-	</script>
-	<script id="chip-tmpl" type="text/x-jquery-tmpl">
-	</script>
+
 
 <div class="container-fluid">
 	<div class="row">
@@ -363,9 +432,6 @@
 
 				</div>
 				<div id="bank" class="panel-body" >
-					<div class="ui-widget ui-widget-content ui-corner-all chip">
-						<span class="draggable">A<sub>1</sub></span>
-					</div>
 
 				</div>             
 			</div>
