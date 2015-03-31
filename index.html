@@ -72,20 +72,23 @@
 			var randomChipsForBank = [];
 			for(var i in chips){
 				addToArrayByNum(randomChipsForBank, chips[i]);
+				randomizeArray(randomChipsForBank);
 			}
 		
 			fillBank(randomChipsForBank);
 		});
 		function addToArrayByNum(array, chip){
 			for(var i = chip.num; i >0; i--){
+				chip.id = "id_" + chip.litera.charCodeAt() + "-" + i;
 				array.push(chip);
 			}
-
+			
+			return array;
+		}
+		function randomizeArray(array){
 			array.sort(function(){
 				return Math.random() - 0.6;
 			});
-			
-			return array;
 		}
 		function fillBank(chips){
 			var tmpl = $.templates("#chip-tmpl").render(chips);
@@ -94,7 +97,7 @@
 	</script>
 
 	<script id="chip-tmpl" type="text/x-jsrender">
-		<div class="ui-widget ui-widget-content ui-corner-all chip">
+		<div id="{{:id}}" class="ui-widget ui-widget-content ui-corner-all chip">
 			<span class="draggable">{{:litera}}<sub>{{:score}}</sub></span>
 		</div>
 	</script>
@@ -106,16 +109,36 @@
 				snap:".board td, .user-position td",
 				revert:"invalid"
 			});
-			$(".board td, .user-position td").droppable({
-				 drop: function( event, ui ) {
-					$( this )
-					.addClass( "ui-state-highlight" )
-					.find( "p" )
-					.html( "Dropped!" );
+
+			$(".board td").droppable({
+				drop: function( event, ui ) {
+					setDataBoard(ui, $(this));
+					resetDroppable($(this));
 				}
 
 			});
+
+			$(".user-position td").droppable();
 		});
+
+		function resetDroppable(JQdraggable){
+			$(".board td").droppable("enable");
+			var droppablesOnBoard = $(".board").data();
+			for(var i in droppablesOnBoard){
+				log(droppablesOnBoard[i]);
+				droppablesOnBoard[i].droppable("disable");
+			}
+
+		}
+
+		function setDataBoard(JQdraggable, JQdroppable){
+			var tdId = "tdId_" + JQdraggable.helper.attr("id");
+			$(".board").data(tdId, JQdroppable);
+		}
+
+		function log(str){
+			console.log(str);
+		}
 	</script>
 
 
