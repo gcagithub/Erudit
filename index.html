@@ -31,6 +31,7 @@
 	<script src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
 	<script src="js/jsrender.js"></script>
 
+<!--Prepare chips-->
 	<script type="text/javascript">
 		$(function(){
 			var chips = [
@@ -76,7 +77,6 @@
 
 			var randomChipsForBank = [];
 			for(var i in chips){
-				log(chips[i]);
 				addAdditionChips(randomChipsForBank, chips[i]);
 				randomizeArray(randomChipsForBank);
 			}
@@ -103,12 +103,14 @@
 		}
 	</script>
 
+<!--Template for Chip-->
 	<script id="chip-tmpl" type="text/x-jsrender">
 		<div id="{{:id}}" class="ui-widget ui-widget-content ui-corner-all chip">
 			<span class="draggable">{{:litera}}<sub>{{:score}}</sub></span>
 		</div>
 	</script>
 
+<!--Draggable and Droppable part-->
 	<script type="text/javascript">
 		$(function(){
 			$(".draggable").parent().draggable({
@@ -125,7 +127,15 @@
 
 			});
 
-			$(".user-set").droppable();
+			$(".user-set").droppable({
+				drop: function(event, ui){
+					$(".user-set").data(ui.helper.attr("id"),ui.helper);
+					log($(".user-set").data().keys());
+				},
+				out: function(event, ui){
+					$(".user-set").removeData(ui.helper.attr("id"));
+				}
+			});
 		});
 
 		function resetDroppable(JQdraggable){
