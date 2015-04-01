@@ -122,30 +122,50 @@
 			$(".board td").droppable({
 				drop: function( event, ui ) {
 					setDataBoard(ui, $(this));
-					resetDroppable($(this));
+					$(".user-set").removeData(ui.helper.attr("id"));
+					resetDroppable(ui);
 				}
-
 			});
 
 			$(".user-set").droppable({
 				drop: function(event, ui){
 					$(".user-set").data(ui.helper.attr("id"),ui.helper);
-					log($(".user-set").data().keys());
-				},
-				out: function(event, ui){
-					$(".user-set").removeData(ui.helper.attr("id"));
+					$(".board").removeData("tdId_" + ui.helper.attr("id"));
+                                        resetDroppable(ui);
 				}
 			});
 		});
+
+		function getObjectLength(obj){
+			return Object.keys(obj).length;
+		}
 
 		function resetDroppable(JQdraggable){
 			$(".board td").droppable("enable");
 			var droppablesOnBoard = $(".board").data();
 			for(var i in droppablesOnBoard){
-				log(droppablesOnBoard[i]);
 				droppablesOnBoard[i].droppable("disable");
 			}
 
+			if(getObjectLength($(".user-set").data()) < 8){
+				setDroppableUserSet("enable");
+			} else {
+				setDroppableUserSet("disable");
+
+			}
+		}
+
+		function setDroppableUserSet(state){
+			if(state == "enable"){
+				$(".user-set").droppable(state);
+				$(".user-set").removeClass("alert-success");
+				$(".user-set").addClass("alert-danger");
+
+			} else {
+				$(".user-set").droppable(state);
+				$(".user-set").removeClass("alert-danger");
+				$(".user-set").addClass("alert-success");
+			}
 		}
 
 		function setDataBoard(JQdraggable, JQdroppable){
@@ -451,7 +471,7 @@
 <!--chips-->                                    
 	                        	<div class="row">
 						<div class="col-xs-10">
-							<div class="user-set alert alert-success">&nbsp;</div>
+							<div class="user-set alert alert-danger">&nbsp;</div>
 						</div>
 						<div class="col-xs-2">
 							<button 
