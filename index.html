@@ -129,7 +129,7 @@
 
 			$(".user-set").droppable({
 				drop: function(event, ui){
-					$(".user-set").data(ui.helper.attr("id"),ui.helper);
+					setUserSetData(ui.helper);
 					$(".board").removeData("tdId_" + ui.helper.attr("id"));
                                         resetDroppable(ui);
 				}
@@ -147,30 +147,42 @@
 				droppablesOnBoard[i].droppable("disable");
 			}
 
+			resetUserSet();
+		}
+
+		function resetUserSet(){
 			if(getObjectLength($(".user-set").data()) < 8){
 				setDroppableUserSet("enable");
 			} else {
 				setDroppableUserSet("disable");
-
 			}
 		}
 
 		function setDroppableUserSet(state){
+			var userSet = $(".user-set");
 			if(state == "enable"){
-				$(".user-set").droppable(state);
-				$(".user-set").removeClass("alert-success");
-				$(".user-set").addClass("alert-danger");
+				userSet.droppable(state);
+				userSet.removeClass("alert-success");
+				userSet.addClass("alert-danger");
 
 			} else {
-				$(".user-set").droppable(state);
-				$(".user-set").removeClass("alert-danger");
-				$(".user-set").addClass("alert-success");
+				userSet.droppable(state);
+				userSet.removeClass("alert-danger");
+				userSet.addClass("alert-success");
 			}
 		}
 
 		function setDataBoard(JQdraggable, JQdroppable){
 			var tdId = "tdId_" + JQdraggable.helper.attr("id");
 			$(".board").data(tdId, JQdroppable);
+		}
+
+		function setUserSetData(JQchips){
+			var userSet = $(".user-set");
+			JQchips.each(function(index){
+				userSet.data($(this).attr("id"),$(this));
+
+			});
 		}
 
 		function log(str){
@@ -182,12 +194,17 @@
 <script type="text/javascript">
 	$(function(){
 		$("#fillUserSet").click(function(){
-			log("ONClick");
-			var chipsFromBank = $("#bank").children(".chip").toArray();
-			randomizeArray(chipsFromBank);
-			var randChipFromBank = $(chipsFromBank[0]);
-			$(".user-set").append(randChipFromBank);
-			$("#bank").children(randChipFromBank.attr("id")).remove();
+			var userSet = $(".user-set");
+			getObjectLength(userSet.data());
+			if(getObjectLength(userSet.data()) < 8){
+				var chipsFromBank = $("#bank").children(".chip").toArray();
+				randomizeArray(chipsFromBank);
+				var randChipFromBank = $(chipsFromBank.slice(0, (7 - countUserSetChips)));
+				userSet.append(randChipFromBank);
+				setUserSetData(randChipFromBank);
+				$("#bank").children(randChipFromBank.attr("id")).remove();
+				resetUserSet();
+			}
 
 		});
 	});
