@@ -178,6 +178,23 @@
 		}
 	</script>
 
+<!--Button events-->
+<script type="text/javascript">
+	$(function(){
+		$("#fillUserSet").click(function(){
+			log("ONClick");
+			var chipsFromBank = $("#bank").children(".chip").toArray();
+			randomizeArray(chipsFromBank);
+			var randChipFromBank = $(chipsFromBank[0]);
+			$(".user-set").append(randChipFromBank);
+			$("#bank").children(randChipFromBank.attr("id")).remove();
+
+		});
+	});
+	
+
+</script>
+
 
 <div class="container-fluid">
 	<div class="row">
@@ -470,14 +487,14 @@
 				<div class="panel-heading">
 <!--chips-->                                    
 	                        	<div class="row">
-						<div class="col-xs-10">
+						<div class="col-xs-8">
 							<div class="user-set alert alert-danger">&nbsp;</div>
 						</div>
-						<div class="col-xs-2">
-							<button 
-type="button" class="btn btn-success">Success</button>
-						</div>
-					
+						<div class="col-xs-4">
+<div class="btn-group-sm">
+  <button id="fillUserSet" type="button" class="btn btn-default">Набрать фишки</button>
+  <button type="button" class="btn btn-default">Передать ход</button>
+</div>						</div>
 					</div>
 				</div>
 				<div id="bank" class="panel-body" >
