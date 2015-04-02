@@ -198,10 +198,11 @@
 		function setUserSetData(JQchips){
 			var JQbulk = JQchips;
                         JQbulk.each(function(){
-				$(this).css({"left":"0px", "top":"0px","visibility":"hidden"});	
+				$(this).css({"left":"0px", "top":"0px"});	
+				$(this).addClass("invisible");
 			});
 			
-			JQchips = getRandomChips(JQchips.length);
+			JQchips = getRandomChips(JQchips.size());
 			var userSet = $(".user-set");
 			JQchips.each(function(index){
 				userSet.data($(this).attr("id"),$(this));
@@ -233,10 +234,11 @@
 
 			var countUserSetChips = userSet.children(".chip").length;
 			if(countUserSetChips < 7){
-				var bulks = $("#bank").children(".bulk").toArray();
-				randomizeArray(chipsFromBank);
-				var randChipsFromBank = $(chipsFromBank.slice(0, (8 - countUserSetChips)));
-				setUserSetData(randChipsFromBank);
+				var bulks = $("#bank").children(".bulk:not(.invisible)").toArray();
+				log(bulks);
+				randomizeArray(bulks);
+				var randBulks = $(bulks.slice(0, (7 - countUserSetChips)));
+				setUserSetData(randBulks);
 				resetUserSet();
 			}
 
