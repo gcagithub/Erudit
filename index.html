@@ -19,6 +19,9 @@
 
 	<style>
 		.chip {display: inline-block; padding:5px 10px 5px 10px; cursor: pointer;}
+		#bank .chip {margin-bottom: 2px}
+		.bulk {padding:20px; display: inline-block;}
+
 	</style>	
 
 
@@ -33,7 +36,10 @@
 
 <!--Prepare chips-->
 	<script type="text/javascript">
+                var bulk = jQuery("<div class=\"ui-widget ui-widget-content ui-corner-all bulk\"><span class=\"draggable\"></span></div>");
+
 		$(function(){
+
 			var chips = [
 				{litera:"A", score:1, num:10},
 				{litera:"Б", score:3, num:3},
@@ -98,8 +104,16 @@
 			});
 		}
 		function fillBank(chips){
-			var tmpl = $.templates("#chip-tmpl").render(chips);
-			$("#bank").append(tmpl);
+			//var tmpl = $.templates("#chip-tmpl").render(chips);
+			//$("#bank").append(tmpl);
+			$("#bank").data("chips",chips);
+			for(var i=0; i<chips.length; i++){
+				$("#bank").append(bulk.clone());
+			}
+		}
+		function signChips(chipData){
+			var chips = $.templates("#chip-tmpl").render(chipData);
+			return jQuery(chips);
 		}
 	</script>
 
@@ -113,11 +127,7 @@
 <!--Draggable and Droppable part-->
 	<script type="text/javascript">
 		$(function(){
-			$(".draggable").parent().draggable({
-				cursor: "move",
-				snap:".board td, .user-position td",
-				revert:"invalid"
-			});
+			initDraggable();
 
 			$(".board td").droppable({
 				drop: function( event, ui ) {
@@ -135,6 +145,14 @@
 				}
 			});
 		});
+
+		function initDraggable(){
+			$(".draggable").parent().draggable({
+				cursor: "move",
+				snap:".board td, .user-position td",
+				revert:"invalid"
+			});
+		}
 
 		function getObjectLength(obj){
 			return Object.keys(obj).length;
@@ -178,11 +196,28 @@
 		}
 
 		function setUserSetData(JQchips){
+			var JQbulk = JQchips;
+                        JQbulk.each(function(){
+				$(this).css({"left":"0px", "top":"0px","visibility":"hidden"});	
+			});
+			
+			JQchips = getRandomChips(JQchips.length);
 			var userSet = $(".user-set");
 			JQchips.each(function(index){
 				userSet.data($(this).attr("id"),$(this));
-
+				userSet.append($(this));
+				initDraggable();
 			});
+		}
+
+		function getRandomChips(num){
+			var chips = $("#bank").data("chips");
+			return signChips(chips.splice(0,num));
+		}
+
+		function replaceChip(JQchip){
+			JQchip.replaceWith(bulk.clone());
+			//JQchip.css({"visibility":"hidden"});
 		}
 
 		function log(str){
@@ -195,14 +230,13 @@
 	$(function(){
 		$("#fillUserSet").click(function(){
 			var userSet = $(".user-set");
-			getObjectLength(userSet.data());
-			if(getObjectLength(userSet.data()) < 8){
-				var chipsFromBank = $("#bank").children(".chip").toArray();
+
+			var countUserSetChips = userSet.children(".chip").length;
+			if(countUserSetChips < 7){
+				var bulks = $("#bank").children(".bulk").toArray();
 				randomizeArray(chipsFromBank);
-				var randChipFromBank = $(chipsFromBank.slice(0, (7 - countUserSetChips)));
-				userSet.append(randChipFromBank);
-				setUserSetData(randChipFromBank);
-				$("#bank").children(randChipFromBank.attr("id")).remove();
+				var randChipsFromBank = $(chipsFromBank.slice(0, (8 - countUserSetChips)));
+				setUserSetData(randChipsFromBank);
 				resetUserSet();
 			}
 
