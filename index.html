@@ -131,6 +131,7 @@
 
 			$(".board td").droppable({
 				drop: function( event, ui ) {
+					ui.helper.addClass("boarded");
 					setDataBoard(ui, $(this));
 					$(".user-set").removeData(ui.helper.attr("id"));
 					resetDroppable(ui);
@@ -139,9 +140,10 @@
 
 			$(".user-set").droppable({
 				drop: function(event, ui){
-					setUserSetData(ui.helper);
+					ui.helper.removeClass("boarded");
+					setUserSetByBulk(ui.helper);
 					$(".board").removeData("tdId_" + ui.helper.attr("id"));
-                                        resetDroppable(ui);
+                    resetDroppable(ui);
 				}
 			});
 		});
@@ -169,11 +171,12 @@
 		}
 
 		function resetUserSet(){
-			if(getObjectLength($(".user-set").data()) < 8){
+			if($(".user-set").children(".chip:not(.boarded)").size() < 7){
 				setDroppableUserSet("enable");
 			} else {
 				setDroppableUserSet("disable");
 			}
+			toggleDraggableBank();
 		}
 
 		function setDroppableUserSet(state){
@@ -182,7 +185,6 @@
 				userSet.droppable(state);
 				userSet.removeClass("alert-success");
 				userSet.addClass("alert-danger");
-
 			} else {
 				userSet.droppable(state);
 				userSet.removeClass("alert-danger");
@@ -195,11 +197,14 @@
 			$(".board").data(tdId, JQdroppable);
 		}
 
-		function setUserSetData(JQchips){
+		function setUserSetByBulk(JQchips){
+			if(!JQchips.hasClass("bulk")) return;
+
 			var JQbulk = JQchips;
-                        JQbulk.each(function(){
+            JQbulk.each(function(){
 				$(this).css({"left":"0px", "top":"0px"});	
 				$(this).addClass("invisible");
+				$(this).draggable( "disable" );
 			});
 			
 			JQchips = getRandomChips(JQchips.size());
@@ -210,7 +215,7 @@
 				initDraggable();
 			});
 		}
-
+// Return jQuery objects
 		function getRandomChips(num){
 			var chips = $("#bank").data("chips");
 			return signChips(chips.splice(0,num));
@@ -224,6 +229,18 @@
 		function log(str){
 			console.log(str);
 		}
+
+		function toggleDraggableBank(){
+			var bankBulks = $("#bank").children(".bulk:not(.invisible)")
+			if($(".user-set").children(".chip").size() < 7){
+				log("scope = ");
+				bankBulks.draggable("option","scope","");
+			}else{
+				bankBulks.draggable("option","scope","bank");
+				log("scope = bank");
+			}
+			
+		}
 	</script>
 
 <!--Button events-->
@@ -231,17 +248,19 @@
 	$(function(){
 		$("#fillUserSet").click(function(){
 			var userSet = $(".user-set");
-
-			var countUserSetChips = userSet.children(".chip").length;
+			var countUserSetChips = userSet.children(".chip").size();
 			if(countUserSetChips < 7){
 				var bulks = $("#bank").children(".bulk:not(.invisible)").toArray();
-				log(bulks);
 				randomizeArray(bulks);
 				var randBulks = $(bulks.slice(0, (7 - countUserSetChips)));
-				setUserSetData(randBulks);
+				setUserSetByBulk(randBulks);
 				resetUserSet();
 			}
 
+		});
+
+		$("#nextPlayer").click(function(){
+			log($(".board td .boarded"));
 		});
 	});
 	
@@ -546,7 +565,7 @@
 						<div class="col-xs-4">
 <div class="btn-group-sm">
   <button id="fillUserSet" type="button" class="btn btn-default">Набрать фишки</button>
-  <button type="button" class="btn btn-default">Передать ход</button>
+  <button id="nextPlayer" type="button" class="btn btn-default">Передать ход</button>
 </div>						</div>
 					</div>
 				</div>
