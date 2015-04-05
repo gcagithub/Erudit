@@ -234,15 +234,21 @@
 			var bankBulks = $("#bank").children(".bulk:not(.invisible)")
 			if($(".user-set").children(".chip").size() < 7){
 				bankBulks.draggable("option","scope", "default");
-				log("Scope - empty");
 			}else{
 				bankBulks.draggable("option","scope","bank");
-				log("Scope - bank");
 			}
 			
 		}
+
 		function clearPosition (JQobj) {
 			JQobj.css({"left":"0px", "top":"0px"});	
+		}
+
+		function saveWord () {
+			$(".board td .boarded").each(function(index) {
+				var litera = $(this).children("span:not(sub)").text();
+				log(litera);
+			});
 		}
 	</script>
 
@@ -264,19 +270,21 @@
 
 		$("#nextPlayer").click(function(){
 			$(".user-set .boarded").each(function(index) {
-				var droppable = $(".board").data("tdId_" + $(this).attr("id"));
 				clearPosition($(this));
+				var droppable = $(".board").data("tdId_" + $(this).attr("id"));
+				droppable.append($(this));
+
+				saveWord();
+				
 				$(this).removeClass("boarded");
 				$(this).draggable( "disable" );
 				$(this).children(".draggable").removeClass("draggable");
-				droppable.append($(this));
 				$(".board").removeData("tdId_" + $(this).attr("id"));
 				toggleDraggableBank();
+
 			});
 		});
 	});
-	
-
 </script>
 
 
