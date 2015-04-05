@@ -181,7 +181,7 @@
 
 		function setDroppableUserSet(state){
 			var userSet = $(".user-set");
-			if(state == "enable"){
+			if(state === "enable"){
 				userSet.droppable(state);
 				userSet.removeClass("alert-success");
 				userSet.addClass("alert-danger");
@@ -202,7 +202,7 @@
 
 			var JQbulk = JQchips;
             JQbulk.each(function(){
-				$(this).css({"left":"0px", "top":"0px"});	
+				clearPosition($(this));
 				$(this).addClass("invisible");
 				$(this).draggable( "disable" );
 			});
@@ -233,13 +233,16 @@
 		function toggleDraggableBank(){
 			var bankBulks = $("#bank").children(".bulk:not(.invisible)")
 			if($(".user-set").children(".chip").size() < 7){
-				log("scope = ");
-				bankBulks.draggable("option","scope","");
+				bankBulks.draggable("option","scope", "default");
+				log("Scope - empty");
 			}else{
 				bankBulks.draggable("option","scope","bank");
-				log("scope = bank");
+				log("Scope - bank");
 			}
 			
+		}
+		function clearPosition (JQobj) {
+			JQobj.css({"left":"0px", "top":"0px"});	
 		}
 	</script>
 
@@ -260,7 +263,16 @@
 		});
 
 		$("#nextPlayer").click(function(){
-			log($(".board td .boarded"));
+			$(".user-set .boarded").each(function(index) {
+				var droppable = $(".board").data("tdId_" + $(this).attr("id"));
+				clearPosition($(this));
+				$(this).removeClass("boarded");
+				$(this).draggable( "disable" );
+				$(this).children(".draggable").removeClass("draggable");
+				droppable.append($(this));
+				$(".board").removeData("tdId_" + $(this).attr("id"));
+				toggleDraggableBank();
+			});
 		});
 	});
 	
