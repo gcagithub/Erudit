@@ -255,12 +255,29 @@
 			}
 
 			var keys = getObjectKeys(wordData);
+			var letters = [];
 			if(keys.length > 1){
-				var first = wordData[keys[0]];
-				var last = wordData[keys[keys.length - 1]];
-				first.siblings().css( "background-color", "red" );
-				log(first.parent());
-				log(last.parent());
+				var firstDroppable = wordData[keys[0]];
+				var firstId = firstDroppable.children(".chip").attr("id");
+				var lastDroppable = wordData[keys[keys.length - 1]];
+				var lastId = lastDroppable.children(".chip").attr("id");
+
+				firstDroppable.siblings().css( "background-color", "red" );
+
+				var start = false;
+				firstDroppable.siblings().each(function(index) {
+					var id = $(this).children(".chip").attr("id");
+					
+					if (start || id === firstId) {
+						start = true;
+						letters.push(id);
+					}
+
+					if (id === firstId) return;
+
+				});
+				log(letters);
+				log(lastDroppable.parent());
 			} else {
 
 			}
