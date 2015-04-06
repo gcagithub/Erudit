@@ -127,6 +127,7 @@
 <!--Draggable and Droppable part-->
 	<script type="text/javascript">
 		$(function(){
+			
 			initDraggable();
 
 			$(".board td").droppable({
@@ -151,7 +152,7 @@
 		function initDraggable(){
 			$(".draggable").parent().draggable({
 				cursor: "move",
-				snap:".board td, .user-position td",
+				snap:".board td",
 				revert:"invalid"
 			});
 		}
@@ -171,22 +172,21 @@
 		}
 
 		function resetUserSet(){
-			if($(".user-set").children(".chip:not(.boarded)").size() < 7){
+			var notBoarded = $(".user-set").children(".chip:not(.boarded)");
+			if(notBoarded.size() < 7){
 				setDroppableUserSet("enable");
 			} else {
 				setDroppableUserSet("disable");
 			}
-			toggleDraggableBank();
+			toggleUserSetFillingPossibility();
 		}
 
 		function setDroppableUserSet(state){
 			var userSet = $(".user-set");
 			if(state === "enable"){
-				userSet.droppable(state);
 				userSet.removeClass("alert-success");
 				userSet.addClass("alert-danger");
 			} else {
-				userSet.droppable(state);
 				userSet.removeClass("alert-danger");
 				userSet.addClass("alert-success");
 			}
@@ -230,12 +230,14 @@
 			console.log(str);
 		}
 
-		function toggleDraggableBank(){
+		function toggleUserSetFillingPossibility(){
 			var bankBulks = $("#bank").children(".bulk:not(.invisible)")
 			if($(".user-set").children(".chip").size() < 7){
 				bankBulks.draggable("option","scope", "default");
+				$("#fillUserSetBtn").removeAttr("disabled");
 			}else{
 				bankBulks.draggable("option","scope","bank");
+				$("#fillUserSetBtn").attr("disabled", "disabled");
 			}
 			
 		}
@@ -255,7 +257,7 @@
 <!--Button events-->
 <script type="text/javascript">
 	$(function(){
-		$("#fillUserSet").click(function(){
+		$("#fillUserSetBtn").click(function(){
 			var userSet = $(".user-set");
 			var countUserSetChips = userSet.children(".chip").size();
 			if(countUserSetChips < 7){
@@ -265,24 +267,23 @@
 				setUserSetByBulk(randBulks);
 				resetUserSet();
 			}
-
 		});
 
-		$("#nextPlayer").click(function(){
+		$("#nextPlayerBtn").click(function(){
+			saveWord();
+			clearPosition($(".user-set .chip"));
+			
 			$(".user-set .boarded").each(function(index) {
-				clearPosition($(this));
 				var droppable = $(".board").data("tdId_" + $(this).attr("id"));
 				droppable.append($(this));
-
-				saveWord();
 				
 				$(this).removeClass("boarded");
 				$(this).draggable( "disable" );
 				$(this).children(".draggable").removeClass("draggable");
 				$(".board").removeData("tdId_" + $(this).attr("id"));
-				toggleDraggableBank();
-
 			});
+
+			toggleUserSetFillingPossibility();
 		});
 	});
 </script>
@@ -584,8 +585,8 @@
 						</div>
 						<div class="col-xs-4">
 <div class="btn-group-sm">
-  <button id="fillUserSet" type="button" class="btn btn-default">Набрать фишки</button>
-  <button id="nextPlayer" type="button" class="btn btn-default">Передать ход</button>
+  <button id="fillUserSetBtn" type="button" class="btn btn-default">Набрать фишки</button>
+  <button id="nextPlayerBtn" type="button" class="btn btn-default">Передать ход</button>
 </div>						</div>
 					</div>
 				</div>
