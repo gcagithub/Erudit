@@ -88,7 +88,14 @@
 			}
 		
 			fillBank(randomChipsForBank);
+			saveDataForScores(randomChipsForBank);
 		});
+
+		function saveDataForScores (data) {
+			for(var i in data){
+				$("#scores").data(data[i].id, data[i]);
+			}
+		}
 		function addAdditionChips(array, chip){
 			for(var i = chip.num; i >0; i--){
 				var newChip = Object.create(chip);
@@ -122,6 +129,10 @@
 		<div id="{{:id}}" class="ui-widget ui-widget-content ui-corner-all chip">
 			<span class="draggable">{{:litera}}<sub>{{:score}}</sub></span>
 		</div>
+	</script>
+<!-- Template for score statistic -->
+	<script id="score-tmpl" type="text/x-jsrender">
+		<p></p>
 	</script>
 
 <!--Draggable and Droppable part-->
@@ -248,29 +259,13 @@
 		}
 
 		function saveWord (letterIds) {
-			var letters = [];
-			if(letterIds.length > 1){
-				var firstId = letterIds[0];
-				var lastId = letterIds[letterIds.length - 1];
-				var startCell = $(".board #" + firstId).parent();
-
-				var cells = startCell.nextAll("td:has(div#" + lastId + ")");
-				if(cells.size() != 0) {
-					startCell.nextUntil("td:has(div#" + lastId + ")").css( "background-color", "red" );
-				} else {
-					var count = startCell.prevAll().size() + 1;
-					startCell.parent().nextUntil("tr:has(div#" + lastId + ")").each(function(index) {
-						$(this).children("td:nth-child("+count+")").css( "background-color", "green" );
-					});
-
-				}
-				// log(word);
-				// log(letters);
-			} else {
-
-			}
-
-
+			var letter, score, word = [];
+			for (var i = 0; i < letterIds.length; i++) {
+				letter = $("#scores").data(letterIds[i]);
+				word.push(letter.litera);
+				score += letter.score;
+			};
+			$("#scores").append("<p class='text-primary'>" + word.join("") + "</p>");
 
 		}
 	</script>
@@ -295,6 +290,7 @@
 			var letterIds = getObjectKeys($(".board").data());
 			$(".user-set .boarded").each(function(index) {
 				var droppable = $(".board").data( $(this).attr("id"));
+				// $(this).append("<sup>" + $(this).attr("id") + "</sup>");
 				droppable.append($(this));
 				
 				$(this).removeClass("boarded");
@@ -324,7 +320,7 @@
 
 	<div class="row">
 		<div class="col-md-2">
-			<div class="panel panel-default">
+			<div id="scores" class="panel panel-default">
 				<div class="panel-heading text-center">Статистика</div>
 				<div class="panel-body"></div>
 			</div>
