@@ -143,7 +143,7 @@
 				drop: function(event, ui){
 					ui.helper.removeClass("boarded");
 					setUserSetByBulk(ui.helper);
-					$(".board").removeData("tdId_" + ui.helper.attr("id"));
+					$(".board").removeData( ui.helper.attr("id"));
                     resetDroppable(ui);
 				}
 			});
@@ -193,7 +193,7 @@
 		}
 
 		function setDataBoard(JQdraggable, JQdroppable){
-			var tdId = "tdId_" + JQdraggable.helper.attr("id");
+			var tdId =JQdraggable.helper.attr("id");
 			$(".board").data(tdId, JQdroppable);
 		}
 
@@ -247,37 +247,25 @@
 			JQobj.css({"left":"0px", "top":"0px"});	
 		}
 
-		function saveWord () {
-			var wordData = $(".board").data();
-			for(var id in wordData){
-				var literaCodes = id.split("_");
-				log(String.fromCharCode(literaCodes[2]));
-			}
-
-			var keys = getObjectKeys(wordData);
+		function saveWord (letterIds) {
 			var letters = [];
-			if(keys.length > 1){
-				var firstDroppable = wordData[keys[0]];
-				var firstId = firstDroppable.children(".chip").attr("id");
-				var lastDroppable = wordData[keys[keys.length - 1]];
-				var lastId = lastDroppable.children(".chip").attr("id");
+			if(letterIds.length > 1){
+				var firstId = letterIds[0];
+				var lastId = letterIds[letterIds.length - 1];
+				var startCell = $(".board #" + firstId).parent();
 
-				firstDroppable.siblings().css( "background-color", "red" );
+				var cells = startCell.nextAll("td:has(div#" + lastId + ")");
+				if(cells.size() != 0) {
+					startCell.nextUntil("td:has(div#" + lastId + ")").css( "background-color", "red" );
+				} else {
+					var count = startCell.prevAll().size() + 1;
+					startCell.parent().nextUntil("tr:has(div#" + lastId + ")").each(function(index) {
+						$(this).children("td:nth-child("+count+")").css( "background-color", "green" );
+					});
 
-				var start = false;
-				firstDroppable.siblings().each(function(index) {
-					var id = $(this).children(".chip").attr("id");
-					
-					if (start || id === firstId) {
-						start = true;
-						letters.push(id);
-					}
-
-					if (id === firstId) return;
-
-				});
-				log(letters);
-				log(lastDroppable.parent());
+				}
+				// log(word);
+				// log(letters);
 			} else {
 
 			}
@@ -303,21 +291,21 @@
 		});
 
 		$("#nextPlayerBtn").click(function(){
-			saveWord();
 			clearPosition($(".user-set .chip"));
-			
+			var letterIds = getObjectKeys($(".board").data());
 			$(".user-set .boarded").each(function(index) {
-				var droppable = $(".board").data("tdId_" + $(this).attr("id"));
+				var droppable = $(".board").data( $(this).attr("id"));
 				droppable.append($(this));
 				
 				$(this).removeClass("boarded");
 				$(this).draggable( "disable" );
 				$(this).children(".draggable").removeClass("draggable");
 
-				$(".board").removeData("tdId_" + $(this).attr("id"));
+				$(".board").removeData( $(this).attr("id"));
 			});
 
 			toggleUserSetFillingPossibility();
+			saveWord(letterIds);
 		});
 	});
 </script>
