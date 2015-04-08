@@ -88,10 +88,10 @@
 			}
 		
 			fillBank(randomChipsForBank);
-			saveDataForScores(randomChipsForBank);
+			saveHelperData(randomChipsForBank);
 		});
 
-		function saveDataForScores (data) {
+		function saveHelperData (data) {
 			for(var i in data){
 				$("#scores").data(data[i].id, data[i]);
 			}
@@ -132,7 +132,16 @@
 	</script>
 <!-- Template for score statistic -->
 	<script id="score-tmpl" type="text/x-jsrender">
-		<p></p>
+		<ul class="list-unstyled">
+			<li><code>{{:user.name}}:</code></li>
+			<ul>
+			{{for stat}}
+				<li>
+					<small><abbr title="{{:wordAbbr}}">{{:wordReduced}}</abbr>&nbsp;<kbd>{{:score}}</kbd></small>
+				</li>
+			{{/for}}
+			</ul>
+		</ul>
 	</script>
 
 <!--Draggable and Droppable part-->
@@ -258,15 +267,41 @@
 			JQobj.css({"left":"0px", "top":"0px"});	
 		}
 
-		function saveWord (letterIds) {
-			var letter, score, word = [];
-			for (var i = 0; i < letterIds.length; i++) {
-				letter = $("#scores").data(letterIds[i]);
-				word.push(letter.litera);
-				score += letter.score;
+		function saveWord (literaIds) {
+			var litera, score = 0, word = [] , data = {};
+			for (var i = 0; i < literaIds.length; i++) {
+				litera = $("#scores").data(literaIds[i]);
+				word.push(litera.litera);
+				score += litera.score;
 			};
-			$("#scores").append("<p class='text-primary'>" + word.join("") + "</p>");
 
+			var userStat = getUserStat(getUser.login);
+			if(!userStat.stat) {
+				userStat.stat = [];
+				userStat.user = getUser();
+			}
+			data.num = (userStat.stat.length == 0) ? 1 : userStat.stat[userStat.stat.length - 1].num + 1;
+			data.word = word.join("");
+			data.wordAbbr = data.word;
+			data.wordReduced = data.word;
+			data.score = score;
+			userStat.stat.push(data);
+
+			var html = $.templates("#score-tmpl").render(userStat);
+			$("#scores .panel-body ul").remove();
+			$("#scores .panel-body").append(jQuery(html));
+
+		}
+
+		function getUser () {
+			return {name:"Алексей", login:"alex", email:"alex@mail.ru"};
+		}
+
+		function getUserStat (login) {
+			if (!$("#scores").data("users-stat")){
+				$("#scores").data("users-stat",{login:{}});
+			}
+			return $("#scores").data("users-stat").login;
 		}
 	</script>
 
@@ -322,7 +357,16 @@
 		<div class="col-md-2">
 			<div id="scores" class="panel panel-default">
 				<div class="panel-heading text-center">Статистика</div>
-				<div class="panel-body"></div>
+				<div class="panel-body">
+					<ul class="list-unstyled">
+						<li><code>Имя игрока:</code></li>
+						<ul>
+							<li>
+								<small><abbr title="груша">груша</abbr>&nbsp;<kbd>9</kbd></small>
+							</li>
+						</ul>
+					</ul>
+				</div>
 			</div>
 		</div>
 		<div class="col-md-8">
