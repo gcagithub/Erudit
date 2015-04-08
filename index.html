@@ -137,7 +137,7 @@
 			<ul>
 			{{for stat}}
 				<li>
-					<small><abbr title="{{:wordAbbr}}">{{:wordReduced}}</abbr>&nbsp;<kbd>{{:score}}</kbd></small>
+					<small><abbr onClick="wordEdit(this)" title="{{:wordAbbr}}">{{:wordReduced}}</abbr>&nbsp;<kbd>{{:score}}</kbd></small>
 				</li>
 			{{/for}}
 			</ul>
@@ -280,7 +280,7 @@
 				userStat.stat = [];
 				userStat.user = getUser();
 			}
-			data.num = (userStat.stat.length == 0) ? 1 : userStat.stat[userStat.stat.length - 1].num + 1;
+			data.num = userStat.stat.length;
 			data.word = word.join("");
 			data.wordAbbr = data.word;
 			data.wordReduced = data.word;
@@ -288,6 +288,18 @@
 			userStat.stat.push(data);
 
 			var html = $.templates("#score-tmpl").render(userStat);
+			$("#scores .panel-body ul").remove();
+			$("#scores .panel-body").append(jQuery(html));
+
+		}
+
+		function updateUserStat (data) {
+			log(data);
+			var userStat = getUserStat(getUser.login);
+			userStat.stat[data.num].word = data.word;
+
+			var html = $.templates("#score-tmpl").render(userStat);
+			log(html);
 			$("#scores .panel-body ul").remove();
 			$("#scores .panel-body").append(jQuery(html));
 
@@ -339,6 +351,21 @@
 			saveWord(letterIds);
 		});
 	});
+</script>
+
+<!-- Events -->
+<script type="text/javascript">
+	function wordEdit (elm) {
+		var parent = $(elm).parents("ul:first");
+		$(elm).replaceWith( "<input id='wordEdit' onBlur='wordEditBlur(this)' class='form-control input-sm' type='text' value='" + $(elm).text() + "' />" );
+		parent.find("input").focus();
+
+	}
+
+	function wordEditBlur (elm) {
+		var num = $(elm).parents("li:first").prev().size();
+		updateUserStat({'num':num, 'word':elm.value.toUpperCase()});
+	}
 </script>
 
 
