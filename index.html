@@ -133,7 +133,7 @@
 <!-- Template for score statistic -->
 	<script id="score-tmpl" type="text/x-jsrender">
 		<ul class="list-unstyled">
-			<li><code>{{:user.name}}:</code></li>
+			<li><code>{{:user.name}}:</code><span class="label label-info pull-right">{{:user.totalScore}}</span></li>
 			<ul>
 			{{for stat}}
 				<li>
@@ -286,11 +286,20 @@
 			data.wordReduced = getWordReduced(data.word);
 			data.score = score;
 			userStat.stat.push(data);
+			userStat.user.totalScore = getTotalScore(userStat.stat);
 
 			var html = $.templates("#score-tmpl").render(userStat);
 			$("#scores .panel-body ul").remove();
 			$("#scores .panel-body").append(jQuery(html));
 
+		}
+
+		function getTotalScore (objArr) {
+			var totalScore = 0;
+			for(var i in objArr){
+				totalScore += objArr[i].score;
+			}
+			return totalScore;
 		}
 
 		function updateUserStat (data) {
@@ -303,10 +312,12 @@
 					stat.wordAbbr = data.word;
 					stat.wordReduced = getWordReduced (data.word);
 					stat.score = score;
+					userStat.user.totalScore = getTotalScore(userStat.stat);
 				}
 
 			} catch(ex){
-				alert(ex.toString());
+				$("#scores .alert span").text(ex.message);
+				$("#scores .alert").toggleClass("hidden");
 			}finally{
 				var html = $("#score-tmpl").render(userStat);
 				$("#scores .panel-body ul").remove();
@@ -320,7 +331,7 @@
 			var data;
 			for (var i in letters) {
 				data = $("#scores").data("id_" + letters[i].charCodeAt() + "_1");
-				if(!data) throw new Error("Вы ввели неправильный символ!");
+				if(!data) throw new Error("Вы ввели неправильный символ: " + letters[i]);
 				score += $("#scores").data("id_" + letters[i].charCodeAt() + "_1").score;
 			};
 			return score;
@@ -331,7 +342,7 @@
 		}
 
 		function getUser () {
-			return {name:"Алексей", login:"alex", email:"alex@mail.ru"};
+			return {name:"Алексей", login:"alex", email:"alex@mail.ru", totalScore:0};
 		}
 
 		function getUserStat (login) {
@@ -381,6 +392,8 @@
 <!-- Events -->
 <script type="text/javascript">
 	function wordEdit (elm) {
+		if (!$("#scores .alert").hasClass("hidden")) {$("#scores .alert").toggleClass("hidden")};
+
 		var parent = $(elm).parents("ul:first");
 		$(elm).replaceWith( "<input id='wordEdit' onBlur='wordEditBlur(this)' class='form-control input-sm' type='text' value='" + $(elm).text() + "' />" );
 		parent.find("input").focus();
@@ -410,19 +423,15 @@
 			<div id="scores" class="panel panel-default">
 				<div class="panel-heading text-center">Статистика</div>
 				<div class="panel-body">
-					<ul class="list-unstyled">
-						<li><code>Имя игрока:</code></li>
-						<ul>
-							<li>
-								<small><abbr title="груша">груша</abbr>&nbsp;<kbd>9</kbd></small>
-							</li>
-						</ul>
-					</ul>
+					<div class="alert alert-danger hidden">
+						<button type="button" class="close" aria-hidden="true" onClick="$(this).parent().toggleClass('hidden')">&times;</button>
+						<span class="small"></span>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-8">
-			<div class="jumbotron text-center bg-warning">
+			<div class="jumbotron text-center">
 				<table class="table table-bordered table-striped board">
 <!--Header -->
 					<tr>
